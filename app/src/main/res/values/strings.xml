@@ -1,0 +1,5 @@
+<resources>
+    <string name="app_name">MeasureApp</string>
+    <string name="action_estimote">Switch to Estimote</string>
+    <string name="action_altbeacon">Switch to AltBeacon</string>
+</resources>

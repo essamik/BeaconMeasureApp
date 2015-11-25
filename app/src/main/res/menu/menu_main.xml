@@ -1,0 +1,18 @@
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    tools:context=".MainActivity">
+    <item
+        android:id="@+id/action_switchto_estimote"
+        android:title="Switch to Estimote"
+        app:showAsAction="never" />
+
+    <item
+        android:id="@+id/action_switchto_altbeacon"
+        android:title="Switch to AltBeacon"
+        app:showAsAction="never" />
+    <item
+        android:id="@+id/action_switchto_kontaktio"
+        android:title="Switch to Kontakt.io"
+        app:showAsAction="never" />
+</menu>
