@@ -65,16 +65,4 @@ public class MeasureUtils {
         double distance =  a+b+c;
         return Math.round(distance * 100.0) / 100.0;
     }
-
-    public static double computeMyDistance4(double rssi) {
-        double absRSSI = Math.abs(rssi);
-        double a = -3.973371e-02;
-        double b = -(6.717104e-04 * absRSSI);
-        double c = 1.178576e-03 * Math.pow(absRSSI,2);
-        double d = - (5.184685e-05 * Math.pow(absRSSI,3));
-        double e = 5.447350e-07 * Math.pow(absRSSI,4);
-        double distance =  a+b+c+d+e;
-        return Math.round(distance * 100.0) / 100.0;
-
-    }
 }
