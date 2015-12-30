@@ -78,7 +78,7 @@ public abstract class BaseActivity extends AppCompatActivity implements BeaconLi
     public void onBeaconSelected(MyBeacon beacon) {
         //Change region and update detail view
         onRegionChange(beacon);
-        mMeasureFragment = MeasureFragment.newInstance(beacon, getLibraryName());
+        mMeasureFragment = MeasureFragment.newInstance(this, beacon, getLibraryName());
         getSupportFragmentManager().beginTransaction().
                 replace(R.id.content_layout, mMeasureFragment)
                 .addToBackStack(null)

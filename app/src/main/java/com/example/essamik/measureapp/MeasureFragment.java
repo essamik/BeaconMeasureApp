@@ -1,5 +1,6 @@
 package com.example.essamik.measureapp;
 
+import android.content.Context;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.os.CountDownTimer;
@@ -16,10 +17,12 @@ import android.widget.Toast;
 import java.util.ArrayList;
 import java.util.List;
 
+import ch.swisscom.beacondistanceestimator.AverageDistanceEstimator;
 
 public class MeasureFragment extends Fragment {
 
     public static final int TIME_SCANNING_IN_MS = 60000;
+
     private MyBeacon mBeaconToMeasure;
     private Toolbar mToolBar;
     private String mLibraryName;
@@ -27,7 +30,7 @@ public class MeasureFragment extends Fragment {
     boolean mIsMeasuring = false;
     private int mMilliSecondsStart;
     private double mRealDistance;
-    private AverageDistanceCalculator mDistanceCalculator;
+    private AverageDistanceEstimator mDistanceCalculator;
     private boolean mIsComparing;
 
     private TextView mAddressLabel;
@@ -39,12 +42,13 @@ public class MeasureFragment extends Fragment {
     private Button mStartMeasuringButton;
     private Button mCompareButton;
 
-    public static MeasureFragment newInstance(MyBeacon beacon, String libraryName) {
+
+    public static MeasureFragment newInstance(Context context, MyBeacon beacon, String libraryName) {
         MeasureFragment instance = new MeasureFragment();
         instance.mBeaconToMeasure = beacon;
         instance.mLibraryName = libraryName;
         instance.mListMeasurment = new ArrayList<>();
-        instance.mDistanceCalculator = new AverageDistanceCalculator(beacon.getCalibrationVal());
+        instance.mDistanceCalculator = new AverageDistanceEstimator(context, beacon.getCalibrationVal());
 
         return instance;
     }
@@ -117,7 +121,6 @@ public class MeasureFragment extends Fragment {
         mIsMeasuring = false;
         mStartMeasuringButton.setEnabled(true);
 
-        //TODO Save
         MeasureUtils.saveMeasure(MeasureUtils.extractCSVData(mListMeasurment), mRealDistance, mBeaconToMeasure, mLibraryName);
     }
 
@@ -125,7 +128,7 @@ public class MeasureFragment extends Fragment {
         double sdkDistance = mBeaconToMeasure.getDistance();
         double myDistance = mDistanceCalculator.getAveragedDistance();
         boolean myDistanceIsBetter = Math.abs(myDistance - mRealDistance) <= Math.abs(sdkDistance - mRealDistance);
-        double myDistanceRaw = AverageDistanceCalculator.computeMyDistance(mBeaconToMeasure.getRssi(), mBeaconToMeasure.getCalibrationVal());
+        double myDistanceRaw = AverageDistanceEstimator.calculateDistance(mBeaconToMeasure.getRssi(), mBeaconToMeasure.getCalibrationVal());
 
         if (mIsComparing) {
             mSDKDistanceLabel.setTextColor(myDistanceIsBetter ? Color.RED : Color.GREEN);
@@ -133,22 +136,21 @@ public class MeasureFragment extends Fragment {
         }
 
         mAddressLabel.setText("Address : " + mBeaconToMeasure.getAddress());
-        mSDKDistanceLabel.setText("Distance : " + sdkDistance + "m");
-        mMyDistanceLabel.setText("My Distance : " + myDistance + "m ("+ myDistanceRaw +"m)");
-        mSDKDistanceLabel.setText("SDK Distance : " + mBeaconToMeasure.getDistance() + "m");
         mMajminLabel.setText("Major : " + mBeaconToMeasure.getMajor() + " Minor : " + mBeaconToMeasure.getMinor());
         mRSSILabel.setText("RSSI : " + mBeaconToMeasure.getRssi() + "dBm");
+        mSDKDistanceLabel.setText("SDK Distance : " + mBeaconToMeasure.getDistance() + "m");
+        mMyDistanceLabel.setText("My Distance : " + myDistance + "m ("+ myDistanceRaw +"m) / " + mDistanceCalculator.getSampleSize());
     }
 
     public void onSignalReceived(MyBeacon beacon) {
         mBeaconToMeasure = beacon;
-        mDistanceCalculator.addDistance(beacon.getRssi());
+        mDistanceCalculator.addRSSI(beacon.getRssi());
 
         if (getView() != null) fillVew();
 
         if (mIsMeasuring) {
             int millisecElapsed = (int) (System.currentTimeMillis()) - mMilliSecondsStart;
-            mListMeasurment.add(new MeasurmentBeaconSignal(mBeaconToMeasure.getAddress(), millisecElapsed, beacon.getRssi(), beacon.getCalibrationVal(), beacon.getDistance(), mRealDistance));
+            mListMeasurment.add(new MeasurmentBeaconSignal(mBeaconToMeasure.getAddress(), millisecElapsed, beacon.getRssi(), beacon.getCalibrationVal(), beacon.getDistance(), mDistanceCalculator.getAveragedDistance(),  mRealDistance));
         }
     }
 }
