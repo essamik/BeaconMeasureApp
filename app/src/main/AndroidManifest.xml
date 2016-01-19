@@ -38,7 +38,7 @@
 
         <meta-data
             android:name="kontakt.io.API_KEY"
-            android:value="ZdOFMRNcHXAScddULTrYnfOWXjvBOJvI" />
+            android:value="@string/kontaktio_apikey" />
 
         <service android:name="com.kontakt.sdk.android.ble.service.ProximityService" android:exported="false"/>
 

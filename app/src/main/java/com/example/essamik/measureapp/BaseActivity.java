@@ -66,7 +66,6 @@ public abstract class BaseActivity extends AppCompatActivity implements BeaconLi
             startActivity(new Intent(this, EstimoteRangingActivity.class));
         } else if (item.getItemId() == R.id.action_switchto_kontaktio) {
             startActivity(new Intent(this, KontaktIORangingActivity.class));
-
         }
 
         finish();
@@ -90,6 +89,5 @@ public abstract class BaseActivity extends AppCompatActivity implements BeaconLi
         super.onBackPressed();
         mMeasureFragment = null;
         startRangingAll();
-
     }
 }

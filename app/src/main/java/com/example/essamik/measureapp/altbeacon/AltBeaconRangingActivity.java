@@ -20,9 +20,8 @@ import java.util.Collection;
 
 public class AltBeaconRangingActivity extends BaseActivity implements BeaconConsumer {
 
-    protected static final String TAG = "AltBeaconRanging";
     protected static final Region ALL_BEACONS_REGION = new Region("myregion", null, null, null);
-    public static final String LIBRARY_NAME = "AltBeacon";
+    public final String LIBRARY_NAME = getString(R.string.altbeacon);
 
     private BeaconManager mBeaconManager;
 
@@ -32,15 +31,14 @@ public class AltBeaconRangingActivity extends BaseActivity implements BeaconCons
 
         // Configure BeaconManager.
         mBeaconManager = BeaconManager.getInstanceForApplication(this);
-        // To detect proprietary beacons, you must add a line like below corresponding to your beacon
-        // type.  Do a web search for "setBeaconLayout" to get the proper expression.
+        // To detect proprietary beacons, you must add a line like below corresponding to your beacon type.
         mBeaconManager.getBeaconParsers().add(new BeaconParser().
                 setBeaconLayout("m:2-3=0215,i:4-19,i:20-21,i:22-23,p:24-24,d:25-25"));
 
         mBeaconManager.bind(this);
 
-        Log.d(TAG, "Beacon Manager launched");
     }
+
     @Override
     protected void onRegionChange(MyBeacon beacon) {
         try {
@@ -50,13 +48,11 @@ public class AltBeaconRangingActivity extends BaseActivity implements BeaconCons
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
-            Identifier uuid = Identifier.parse(beacon.getUuid());
-            Identifier major = Identifier.fromInt(beacon.getMajor());
-            Identifier minor = Identifier.fromInt(beacon.getMinor());
-                    mBeaconManager.startRangingBeaconsInRegion(new Region("myregion",
-                            Identifier.parse(beacon.getUuid()),
-                            Identifier.fromInt(beacon.getMajor()),
-                            Identifier.fromInt(beacon.getMinor())));
+
+            mBeaconManager.startRangingBeaconsInRegion(new Region("myregion",
+                    Identifier.parse(beacon.getUuid()),
+                    Identifier.fromInt(beacon.getMajor()),
+                    Identifier.fromInt(beacon.getMinor())));
         } catch (RemoteException e) {
             e.printStackTrace();
         }
@@ -106,7 +102,7 @@ public class AltBeaconRangingActivity extends BaseActivity implements BeaconCons
     protected void startRangingAll() {
         try {
             mBeaconManager.startRangingBeaconsInRegion(ALL_BEACONS_REGION);
-            mToolBar.setSubtitle("Scanning...");
+            mToolBar.setSubtitle(R.string.scanning);
         } catch (RemoteException e) {
             e.printStackTrace();
         }

@@ -19,7 +19,7 @@ import java.util.UUID;
 public class EstimoteRangingActivity extends BaseActivity {
 
     protected static final Region ALL_BEACONS_REGION = new Region("myregion", null, null, null);
-    public static final String LIBRARY_NAME = "Estimote";
+    public final String LIBRARY_NAME = getString(R.string.estimote);
 
 
     private static final int REQUEST_ENABLE_BT = 1234;
@@ -54,7 +54,7 @@ public class EstimoteRangingActivity extends BaseActivity {
 
         // Check if device supports Bluetooth Low Energy.
         if (!beaconManager.hasBluetooth()) {
-            Toast.makeText(this, "Device does not have Bluetooth Low Energy", Toast.LENGTH_LONG).show();
+            Toast.makeText(this, R.string.error_no_ble, Toast.LENGTH_LONG).show();
             return;
         }
 
@@ -71,7 +71,7 @@ public class EstimoteRangingActivity extends BaseActivity {
         beaconManager.connect(new BeaconManager.ServiceReadyCallback() {
             @Override
             public void onServiceReady() {
-                mToolBar.setSubtitle("Scanning...");
+                mToolBar.setSubtitle(R.string.scanning);
                 beaconManager.startRanging(ALL_BEACONS_REGION);
             }
         });
@@ -100,8 +100,8 @@ public class EstimoteRangingActivity extends BaseActivity {
             if (resultCode == Activity.RESULT_OK) {
                 connectToService();
             } else {
-                Toast.makeText(this, "Bluetooth not enabled", Toast.LENGTH_LONG).show();
-                mToolBar.setSubtitle("Bluetooth not enabled");
+                Toast.makeText(this, R.string.error_ble_off, Toast.LENGTH_LONG).show();
+                mToolBar.setSubtitle(R.string.error_ble_off);
 
             }
         }

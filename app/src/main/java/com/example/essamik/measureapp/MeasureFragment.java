@@ -19,24 +19,26 @@ import java.util.List;
 
 import ch.swisscom.beacondistanceestimator.AverageDistanceEstimator;
 
+
 public class MeasureFragment extends Fragment {
 
-    public static final int TIME_SCANNING_IN_MS = 60000;
+    public static final int TIME_MEASURING_IN_MS = 60000;
 
-    private MyBeacon mBeaconToMeasure;
     private Toolbar mToolBar;
     private String mLibraryName;
+
+    private MyBeacon mBeaconToMeasure;
     private List<MeasurmentBeaconSignal> mListMeasurment;
+    private AverageDistanceEstimator mDistanceCalculator;
     boolean mIsMeasuring = false;
     private int mMilliSecondsStart;
     private double mRealDistance;
-    private AverageDistanceEstimator mDistanceCalculator;
     private boolean mIsComparing;
 
     private TextView mAddressLabel;
     private TextView mSDKDistanceLabel;
     private TextView mMyDistanceLabel;
-    private TextView mMajminLabel;
+    private TextView mIdLabel;
     private TextView mRSSILabel;
     private EditText mRealDistanceInput;
     private Button mStartMeasuringButton;
@@ -48,7 +50,7 @@ public class MeasureFragment extends Fragment {
         instance.mBeaconToMeasure = beacon;
         instance.mLibraryName = libraryName;
         instance.mListMeasurment = new ArrayList<>();
-        instance.mDistanceCalculator = new AverageDistanceEstimator(context, beacon.getCalibrationVal());
+        instance.mDistanceCalculator = new AverageDistanceEstimator(context, beacon.getCalibrationVal(), true);
 
         return instance;
     }
@@ -69,7 +71,7 @@ public class MeasureFragment extends Fragment {
         mAddressLabel = (TextView) getView().findViewById(R.id.detail_address);
         mSDKDistanceLabel = (TextView) getView().findViewById(R.id.detail_distance);
         mMyDistanceLabel = (TextView) getView().findViewById(R.id.detail_mydistance);
-        mMajminLabel = (TextView) getView().findViewById(R.id.detail_majmin);
+        mIdLabel = (TextView) getView().findViewById(R.id.detail_majmin);
         mRSSILabel = (TextView) getView().findViewById(R.id.detail_rssi);
         mRealDistanceInput = (EditText) getView().findViewById(R.id.detail_realdistance_input);
         mStartMeasuringButton = (Button) getView().findViewById(R.id.detail_startmeasuring_button);
@@ -83,7 +85,7 @@ public class MeasureFragment extends Fragment {
 
                 mStartMeasuringButton.setEnabled(false);
 
-                new CountDownTimer(TIME_SCANNING_IN_MS, 1000) {
+                new CountDownTimer(TIME_MEASURING_IN_MS, 1000) {
                     @Override
                     public void onTick(long millisUntilFinished) {
                         mToolBar.setSubtitle(millisUntilFinished / 1000 + "s to finish...");
@@ -126,9 +128,9 @@ public class MeasureFragment extends Fragment {
 
     private void fillVew() {
         double sdkDistance = mBeaconToMeasure.getDistance();
-        double myDistance = mDistanceCalculator.getAveragedDistance();
+        double myDistance = mDistanceCalculator.calculateAveragedDistance();
         boolean myDistanceIsBetter = Math.abs(myDistance - mRealDistance) <= Math.abs(sdkDistance - mRealDistance);
-        double myDistanceRaw = AverageDistanceEstimator.calculateDistance(mBeaconToMeasure.getRssi(), mBeaconToMeasure.getCalibrationVal());
+        double myDistanceRaw = AverageDistanceEstimator.calculateDistance(mBeaconToMeasure.getRssi(), mBeaconToMeasure.getCalibrationVal(), true);
 
         if (mIsComparing) {
             mSDKDistanceLabel.setTextColor(myDistanceIsBetter ? Color.RED : Color.GREEN);
@@ -136,7 +138,7 @@ public class MeasureFragment extends Fragment {
         }
 
         mAddressLabel.setText("Address : " + mBeaconToMeasure.getAddress());
-        mMajminLabel.setText("Major : " + mBeaconToMeasure.getMajor() + " Minor : " + mBeaconToMeasure.getMinor());
+        mIdLabel.setText("Major : " + mBeaconToMeasure.getMajor() + " Minor : " + mBeaconToMeasure.getMinor());
         mRSSILabel.setText("RSSI : " + mBeaconToMeasure.getRssi() + "dBm");
         mSDKDistanceLabel.setText("SDK Distance : " + mBeaconToMeasure.getDistance() + "m");
         mMyDistanceLabel.setText("My Distance : " + myDistance + "m ("+ myDistanceRaw +"m) / " + mDistanceCalculator.getSampleSize());
@@ -150,7 +152,7 @@ public class MeasureFragment extends Fragment {
 
         if (mIsMeasuring) {
             int millisecElapsed = (int) (System.currentTimeMillis()) - mMilliSecondsStart;
-            mListMeasurment.add(new MeasurmentBeaconSignal(mBeaconToMeasure.getAddress(), millisecElapsed, beacon.getRssi(), beacon.getCalibrationVal(), beacon.getDistance(), mDistanceCalculator.getAveragedDistance(),  mRealDistance));
+            mListMeasurment.add(new MeasurmentBeaconSignal(mBeaconToMeasure.getAddress(), millisecElapsed, beacon.getRssi(), beacon.getCalibrationVal(), beacon.getDistance(), mDistanceCalculator.calculateAveragedDistance(),  mRealDistance));
         }
     }
 }

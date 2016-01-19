@@ -34,12 +34,13 @@ import java.util.concurrent.TimeUnit;
 
 public class KontaktIORangingActivity extends BaseActivity implements ProximityManager.ProximityListener {
 
-    public static final String LIBRARY_NAME = "Kontakt.io";
+    public final String LIBRARY_NAME = getString(R.string.kontaktio);
 
     private ProximityManager mProximityManager;
     private OnServiceReadyListener mServiceListener = new OnServiceReadyListener() {
         @Override
         public void onServiceReady() {
+
             mProximityManager.attachListener(KontaktIORangingActivity.this);
         }
 
@@ -58,7 +59,7 @@ public class KontaktIORangingActivity extends BaseActivity implements ProximityM
                 .setDebugLoggingEnabled(BuildConfig.DEBUG)
                 .setLogLevelEnabled(LogLevel.DEBUG, true)
                 .setCrashlyticsLoggingEnabled(true);
-        KontaktSDK.initialize("ZdOFMRNcHXAScddULTrYnfOWXjvBOJvI");
+        KontaktSDK.initialize(getString(R.string.kontaktio_apikey));
 
         startRangingAll();
     }
@@ -102,13 +103,6 @@ public class KontaktIORangingActivity extends BaseActivity implements ProximityM
 
     @Override
     protected void onRegionChange(final MyBeacon beacon) {
-        List<IBeaconFilter> filterList = Arrays.asList(
-                IBeaconFilters.newProximityUUIDFilter(UUID.fromString(beacon.getUuid())),
-                IBeaconFilters.newMajorFilter(beacon.getMajor()),
-                IBeaconFilters.newMinorFilter(beacon.getMinor())
-
-        );
-
         IBeaconScanContext ibeaconScanContext = new IBeaconScanContext.Builder()
                 .setDevicesUpdateCallbackInterval(TimeUnit.SECONDS.toMillis(2))
                 .setDistanceSort(DistanceSort.DESC)
@@ -163,7 +157,7 @@ public class KontaktIORangingActivity extends BaseActivity implements ProximityM
 
         mProximityManager.initializeScan(scanContext, mServiceListener);
 
-        mToolBar.setSubtitle("Scanning...");
+        mToolBar.setSubtitle(R.string.scanning);
     }
 
     @Override

@@ -17,7 +17,6 @@ public class MyBeacon implements Serializable {
     private double mRssi;
     private int mBatteryPower;
     private double mDistance;
-    private int mTxPower;
     private double mCalibrationVal;
 
     public String getUuid() {
@@ -76,14 +75,6 @@ public class MyBeacon implements Serializable {
         this.mDistance = distance;
     }
 
-    public double getTxPower() {
-        return mTxPower;
-    }
-
-    public void setTxPower(int txPower) {
-        this.mTxPower = txPower;
-    }
-
     public double getCalibrationVal() {
         return mCalibrationVal;
     }
@@ -95,7 +86,6 @@ public class MyBeacon implements Serializable {
         myBeacon.mMinor = baseBeacon.getId3().toInt();
         myBeacon.mAdress = baseBeacon.getBluetoothAddress();
         myBeacon.mDistance =  baseBeacon.getDistance();
-        myBeacon.mTxPower = baseBeacon.getTxPower();
         myBeacon.mRssi = baseBeacon.getRssi();
         myBeacon.mCalibrationVal = baseBeacon.getTxPower();
 
@@ -113,7 +103,6 @@ public class MyBeacon implements Serializable {
         myBeacon.mRssi = baseBeacon.getRssi();
         myBeacon.mCalibrationVal = baseBeacon.getMeasuredPower();
 
-        //V.1 -77, v.2 -84, v.3 -77
         return myBeacon;
     }
 

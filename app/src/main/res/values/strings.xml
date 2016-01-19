@@ -2,4 +2,15 @@
     <string name="app_name">MeasureApp</string>
     <string name="action_estimote">Switch to Estimote</string>
     <string name="action_altbeacon">Switch to AltBeacon</string>
+
+    <string name="kontaktio">Kontakt.io</string>
+    <string name="altbeacon">AltBeacon</string>
+    <string name="estimote">Estimote</string>
+
+    <string name="scanning">Scanning...</string>
+    <string name="error_no_ble">Device does not have Bluetooth Low Energy</string>
+    <string name="error_ble_off">Bluetooth not enabled</string>
+
+    <string name="kontaktio_apikey">ZdOFMRNcHXAScddULTrYnfOWXjvBOJvI</string>
+
 </resources>

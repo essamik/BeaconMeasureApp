@@ -26,6 +26,7 @@ public class BeaconAdapter extends BaseAdapter {
 
     public void replaceWith(MyBeacon newBeacon) {
         boolean found = false;
+
         for (int i = 0; i < mBeaconList.size(); i++) {
             if (mBeaconList.get(i).getAddress().equals(newBeacon.getAddress())) {
                 mBeaconList.set(i, newBeacon);
