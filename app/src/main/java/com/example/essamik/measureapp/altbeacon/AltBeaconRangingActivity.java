@@ -21,7 +21,7 @@ import java.util.Collection;
 public class AltBeaconRangingActivity extends BaseActivity implements BeaconConsumer {
 
     protected static final Region ALL_BEACONS_REGION = new Region("myregion", null, null, null);
-    public final String LIBRARY_NAME = getString(R.string.altbeacon);
+    public final String LIBRARY_NAME = "AltBeacon";
 
     private BeaconManager mBeaconManager;
 

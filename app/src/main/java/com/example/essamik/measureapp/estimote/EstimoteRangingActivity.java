@@ -19,7 +19,7 @@ import java.util.UUID;
 public class EstimoteRangingActivity extends BaseActivity {
 
     protected static final Region ALL_BEACONS_REGION = new Region("myregion", null, null, null);
-    public final String LIBRARY_NAME = getString(R.string.estimote);
+    public final String LIBRARY_NAME = "Estimote";
 
 
     private static final int REQUEST_ENABLE_BT = 1234;

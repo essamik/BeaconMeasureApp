@@ -34,7 +34,7 @@ import java.util.concurrent.TimeUnit;
 
 public class KontaktIORangingActivity extends BaseActivity implements ProximityManager.ProximityListener {
 
-    public final String LIBRARY_NAME = getString(R.string.kontaktio);
+    public final String LIBRARY_NAME = "Kontakt.io  ";
 
     private ProximityManager mProximityManager;
     private OnServiceReadyListener mServiceListener = new OnServiceReadyListener() {
