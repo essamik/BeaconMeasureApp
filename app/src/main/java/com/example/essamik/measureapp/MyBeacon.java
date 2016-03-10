@@ -11,6 +11,7 @@ import java.io.Serializable;
 public class MyBeacon implements Serializable {
 
     private String mUuid;
+    private String name;
     private int mMajor;
     private int mMinor;
     private String mAdress;
@@ -110,6 +111,7 @@ public class MyBeacon implements Serializable {
     public static MyBeacon fromKontaktIO(IBeaconDevice baseBeacon) {
         MyBeacon myBeacon = new MyBeacon();
         myBeacon.mUuid = baseBeacon.getProximityUUID().toString();
+        myBeacon.name = baseBeacon.getUniqueId();
         myBeacon.mMajor = baseBeacon.getMajor();
         myBeacon.mMinor = baseBeacon.getMinor();
         myBeacon.mAdress = baseBeacon.getAddress();
@@ -122,4 +124,11 @@ public class MyBeacon implements Serializable {
     }
 
 
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
 }

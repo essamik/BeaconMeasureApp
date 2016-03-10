@@ -1,10 +1,15 @@
 package com.example.essamik.measureapp;
 
+import android.Manifest;
+import android.app.Activity;
 import android.content.Context;
+import android.content.pm.PackageManager;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.os.CountDownTimer;
+import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.Toolbar;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -23,6 +28,7 @@ import ch.swisscom.beacondistanceestimator.AverageDistanceEstimator;
 public class MeasureFragment extends Fragment {
 
     public static final int TIME_MEASURING_IN_MS = 60000;
+    private static final int REQUEST_PERMISSION_STORAGE = 43;
 
     private Toolbar mToolBar;
     private String mLibraryName;
@@ -79,30 +85,8 @@ public class MeasureFragment extends Fragment {
         mStartMeasuringButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                mIsMeasuring = true;
-                mMilliSecondsStart = (int) (System.currentTimeMillis());
-                mRealDistance = Double.parseDouble(mRealDistanceInput.getText().toString());
 
-                mStartMeasuringButton.setEnabled(false);
-
-                new CountDownTimer(TIME_MEASURING_IN_MS, 1000) {
-                    @Override
-                    public void onTick(long millisUntilFinished) {
-                        mToolBar.setSubtitle(millisUntilFinished / 1000 + "s to finish...");
-                    }
-
-                    @Override
-                    public void onFinish() {
-                        getActivity().runOnUiThread(new Runnable() {
-                            @Override
-                            public void run() {
-                                stopMeasuring();
-                                mToolBar.setSubtitle("");
-
-                            }
-                        });
-                    }
-                }.start();
+                requestStoragePermission();
 
             }
         });
@@ -116,6 +100,53 @@ public class MeasureFragment extends Fragment {
         });
 
         fillVew();
+    }
+
+    private void requestStoragePermission() {
+        int permissionCheck = ContextCompat.checkSelfPermission(getContext(), Manifest.permission.WRITE_EXTERNAL_STORAGE);
+        if (permissionCheck == PackageManager.PERMISSION_GRANTED) {
+            startMeasurement();
+        } else {
+            requestPermissions(new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, REQUEST_PERMISSION_STORAGE);
+        }
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
+        switch (requestCode) {
+            case REQUEST_PERMISSION_STORAGE:
+                if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                    startMeasurement();
+                }
+                break;
+        }
+    }
+
+    private void startMeasurement() {
+        mIsMeasuring = true;
+        mMilliSecondsStart = (int) (System.currentTimeMillis());
+        mRealDistance = Double.parseDouble(mRealDistanceInput.getText().toString());
+
+        mStartMeasuringButton.setEnabled(false);
+
+        new CountDownTimer(TIME_MEASURING_IN_MS, 1000) {
+            @Override
+            public void onTick(long millisUntilFinished) {
+                mToolBar.setSubtitle(millisUntilFinished / 1000 + "s to finish...");
+            }
+
+            @Override
+            public void onFinish() {
+                getActivity().runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        stopMeasuring();
+                        mToolBar.setSubtitle("");
+
+                    }
+                });
+            }
+        }.start();
     }
 
     private void stopMeasuring() {
@@ -141,7 +172,7 @@ public class MeasureFragment extends Fragment {
         mIdLabel.setText("Major : " + mBeaconToMeasure.getMajor() + " Minor : " + mBeaconToMeasure.getMinor());
         mRSSILabel.setText("RSSI : " + mBeaconToMeasure.getRssi() + "dBm");
         mSDKDistanceLabel.setText("SDK Distance : " + mBeaconToMeasure.getDistance() + "m");
-        mMyDistanceLabel.setText("My Distance : " + myDistance + "m ("+ myDistanceRaw +"m) / " + mDistanceCalculator.getSampleSize());
+        mMyDistanceLabel.setText("My Distance : " + myDistance + "m (" + myDistanceRaw + "m) / " + mDistanceCalculator.getSampleSize());
     }
 
     public void onSignalReceived(MyBeacon beacon) {
@@ -152,7 +183,7 @@ public class MeasureFragment extends Fragment {
 
         if (mIsMeasuring) {
             int millisecElapsed = (int) (System.currentTimeMillis()) - mMilliSecondsStart;
-            mListMeasurment.add(new MeasurmentBeaconSignal(mBeaconToMeasure.getAddress(), millisecElapsed, beacon.getRssi(), beacon.getCalibrationVal(), beacon.getDistance(), mDistanceCalculator.calculateAveragedDistance(),  mRealDistance));
+            mListMeasurment.add(new MeasurmentBeaconSignal(mBeaconToMeasure.getAddress(), millisecElapsed, beacon.getRssi(), beacon.getCalibrationVal(), beacon.getDistance(), mDistanceCalculator.calculateAveragedDistance(), mRealDistance));
         }
     }
 }

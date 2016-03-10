@@ -13,12 +13,16 @@ public class MeasureUtils {
         String filename = libraryName + " " + beacon.getMajor() + "-" + beacon.getMinor() + " (" + distance + "m).csv";
         String root = Environment.getExternalStorageDirectory().toString();
         File myDir = new File(root + "/saved_measures");
-        myDir.mkdirs();
+        boolean mkdirs = myDir.mkdirs();
         File file = new File (myDir, filename);
-        if (file.exists ()) file.delete ();
+        boolean delete;
+        if (file.exists ()) {
+            delete = file.delete();
+        }
 
         try {
-            OutputStreamWriter out = new OutputStreamWriter(new FileOutputStream(file));
+            FileOutputStream fos = new FileOutputStream(file);
+            OutputStreamWriter out = new OutputStreamWriter(fos);
             out.write(content);
             out.flush();
             out.close();
