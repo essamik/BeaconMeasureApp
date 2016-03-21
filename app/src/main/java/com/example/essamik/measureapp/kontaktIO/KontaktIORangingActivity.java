@@ -67,7 +67,7 @@ public class KontaktIORangingActivity extends BaseActivity implements ProximityM
     @Override
     protected void onResume() {
         super.onResume();
-        mToolBar.setTitle(getString(R.string.app_name) + " - "  + LIBRARY_NAME);
+        mToolBar.setTitle(getString(R.string.app_name) + " - " + LIBRARY_NAME);
     }
 
     @Override
@@ -113,7 +113,7 @@ public class KontaktIORangingActivity extends BaseActivity implements ProximityM
                         final int major = iBeaconAdvertisingPacket.getMajor();
                         final int minor = iBeaconAdvertisingPacket.getMinor();
 
-                        return proximityUUID.equals(UUID.fromString(beacon.getUuid())) &&  major == beacon.getMajor() && minor == beacon.getMinor();
+                        return proximityUUID.equals(UUID.fromString(beacon.getUuid())) && major == beacon.getMajor() && minor == beacon.getMinor();
                     }
                 }))
 
@@ -121,7 +121,7 @@ public class KontaktIORangingActivity extends BaseActivity implements ProximityM
 
         ScanContext scanContext = new ScanContext.Builder()
                 .setIBeaconScanContext(ibeaconScanContext)
-                .setForceScanConfiguration(ForceScanConfiguration.DEFAULT)
+                .setForceScanConfiguration(ForceScanConfiguration.MINIMAL)
                 .setScanPeriod(new ScanPeriod(3000, 0))
                 .setScanMode(ProximityManager.SCAN_MODE_BALANCED)
                 .build();
@@ -144,14 +144,14 @@ public class KontaktIORangingActivity extends BaseActivity implements ProximityM
         mProximityManager = new ProximityManager(this);
 
         IBeaconScanContext iBeaconScanContext = new IBeaconScanContext.Builder()
-                .setRssiCalculator(RssiCalculators.newLimitedMeanRssiCalculator(5))
-                .setDevicesUpdateCallbackInterval(TimeUnit.SECONDS.toMillis(2))
+                .setRssiCalculator(RssiCalculators.DEFAULT)
+              //  .setDevicesUpdateCallbackInterval(TimeUnit.SECONDS.toMillis(2))
                 .setDistanceSort(DistanceSort.DESC).build();
 
         ScanContext scanContext = new ScanContext.Builder()
                 .setIBeaconScanContext(iBeaconScanContext)
-                .setForceScanConfiguration(ForceScanConfiguration.DEFAULT)
-                .setScanPeriod(new ScanPeriod(3000, 0))
+              //  .setForceScanConfiguration(ForceScanConfiguration.MINIMAL)
+              //  .setScanPeriod(new ScanPeriod(3000, 0))
                 .setScanMode(ProximityManager.SCAN_MODE_BALANCED)
                 .build();
 
