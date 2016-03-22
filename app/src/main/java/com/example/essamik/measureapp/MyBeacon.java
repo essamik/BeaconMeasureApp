@@ -11,7 +11,6 @@ import java.io.Serializable;
 public class MyBeacon implements Serializable {
 
     private String mUuid;
-    private String name;
     private int mMajor;
     private int mMinor;
     private String mAdress;
@@ -19,6 +18,7 @@ public class MyBeacon implements Serializable {
     private int mBatteryPower;
     private double mDistance;
     private double mCalibrationVal;
+    private String mName;
 
     public String getUuid() {
         return mUuid;
@@ -80,6 +80,15 @@ public class MyBeacon implements Serializable {
         return mCalibrationVal;
     }
 
+    public String getName() {
+        return mName;
+    }
+
+    public void setName(String name) {
+        this.mName = name;
+    }
+
+
     public static MyBeacon fromAltBeacon(Beacon baseBeacon) {
         MyBeacon myBeacon = new MyBeacon();
         myBeacon.mUuid = baseBeacon.getId1().toString();
@@ -111,7 +120,7 @@ public class MyBeacon implements Serializable {
     public static MyBeacon fromKontaktIO(IBeaconDevice baseBeacon) {
         MyBeacon myBeacon = new MyBeacon();
         myBeacon.mUuid = baseBeacon.getProximityUUID().toString();
-        myBeacon.name = baseBeacon.getUniqueId();
+        myBeacon.mName = baseBeacon.getUniqueId();
         myBeacon.mMajor = baseBeacon.getMajor();
         myBeacon.mMinor = baseBeacon.getMinor();
         myBeacon.mAdress = baseBeacon.getAddress();
@@ -121,14 +130,5 @@ public class MyBeacon implements Serializable {
         myBeacon.mCalibrationVal = baseBeacon.getTxPower();
 
         return myBeacon;
-    }
-
-
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
     }
 }
